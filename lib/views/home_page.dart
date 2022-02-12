@@ -10,6 +10,8 @@ import 'package:my_app/controllers/files_controller.dart';
 import 'package:my_app/controllers/pdf_controller.dart';
 import 'package:my_app/widgets/pdf_page.dart';
 import 'package:path/path.dart';
+import 'package:camera/camera.dart';
+import 'package:my_app/main.dart';
 
 class HomePage extends GetView<FilesControler> {
   const HomePage({Key? key}) : super(key: key);
@@ -41,7 +43,15 @@ class HomePage extends GetView<FilesControler> {
               const ListTile(
                 leading: Icon(Icons.settings),
                 title: Text('Settings'),
+
               ),
+              const ListTile(
+                leading: Icon(Icons.camera),
+                title: Text('Camera'),
+                //onTap: ,
+
+              ),
+             // const TextButton(onPressed: null, child: Text("Here")),
             ],
           ),
         ),
@@ -84,3 +94,48 @@ class HomePage extends GetView<FilesControler> {
         ));
   }
 }
+
+class CameraControl extends StatefulWidget {
+  const CameraControl({ Key? key }) : super(key: key);
+  @override
+  _CameraControlState createState() => _CameraControlState();
+}
+
+class _CameraControlState extends State<CameraControl> {
+  bool isWorking = false;
+  String result = "";
+  late CameraController cameraController;
+  CameraImage ?imgCamera;
+  late var controller;
+
+
+  @override
+  void initState() {
+    super.initState();
+    controller = CameraController(cameras[1], ResolutionPreset.max);
+    controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!controller.value.isInitialized) {
+      return Container();
+    }
+    return MaterialApp(
+      home: CameraPreview(controller),
+    );
+  }
+
+}
+
